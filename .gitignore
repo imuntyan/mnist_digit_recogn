@@ -3,3 +3,5 @@ venv/
 *.ipr
 *.iws
 .python-version
+flaskproj
+mnist_fitted_model
