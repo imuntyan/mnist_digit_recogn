@@ -34,8 +34,6 @@ https://www.fullstackpython.com/blog/python-3-flask-green-unicorn-ubuntu-1604-xe
 
 
 ```shell script
-mkdir flaskproj
-cp apply/flask/__init__.py flaskproj/.
-gunicorn flaskproj:app
+gunicorn web:app
 ```
 

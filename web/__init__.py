@@ -21,6 +21,7 @@ def abc():
 def image():
     content = request.json
     data = content["data"]
+    print(data)
     with urlopen(data) as response:
         dt = response.read()
         # convert string of image data to uint8
