@@ -1,7 +1,7 @@
 from flask import Flask, request, Response
 import numpy as np
 from urllib.request import urlopen
-import cv2
+# import cv2
 import jsonpickle
 from .image_utils import imageprepare
 from tensorflow import keras
@@ -23,12 +23,9 @@ def abc():
 def image():
     content = request.json
     data = content["data"]
-    print(data)
     with urlopen(data) as response:
         dt = response.read()
 
-
-        print(dt)
         # convert string of image data to uint8
         # nparr = np.fromstring(dt, np.uint8)
 
@@ -36,12 +33,11 @@ def image():
         tva, new_image = imageprepare(dt)
         xnp = np.array(tva, dtype="float32").reshape((1,28, 28,1))
         model = keras.models.load_model('mnist_fitted_model')
-        digit = model.predict(xnp)
-        print(digit)
+        digits = model.predict(xnp)
 
-        nparr = np.fromstring(dt, np.uint8)
-        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        response = {'message': 'image received. size={}x{}, digit={}'.format(img.shape[1], img.shape[0], digit)}
+        # nparr = np.frombuffer(dt, np.uint8)
+        # img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        response = {'message': digits.ravel().tolist()}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
 
