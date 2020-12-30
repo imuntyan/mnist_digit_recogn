@@ -8,18 +8,20 @@ input_shape = (28, 28, 1)
 
 inputs = keras.Input(shape=(784,), name="digits")
 
-model = keras.Sequential(
-    [
-        keras.Input(shape=input_shape),
-        layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
-        layers.MaxPooling2D(pool_size=(2, 2)),
-        layers.Conv2D(64, kernel_size=(3, 3), activation="relu"),
-        layers.MaxPooling2D(pool_size=(2, 2)),
-        layers.Flatten(),
-        layers.Dropout(0.5),
-        layers.Dense(num_classes, activation="softmax"),
-    ]
-)
+def define_model():
+    model = keras.Sequential()
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_uniform', input_shape=(28, 28, 1)))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Flatten())
+    model.add(layers.Dense(100, activation='relu', kernel_initializer='he_uniform'))
+    model.add(layers.Dense(10, activation='softmax'))
+    # compile model
+    opt = keras.optimizers.SGD(lr=0.01, momentum=0.9)
+    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
+
+
+model = define_model()
 
 (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
 # Preprocess the data (these are NumPy arrays)

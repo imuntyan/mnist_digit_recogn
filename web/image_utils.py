@@ -24,7 +24,7 @@ def imageprepare(image_data):
     """
     im = Image.open(io.BytesIO(image_data))
     im = remove_transparency(im)
-    im = im.resize((100,100))
+    im = im.resize((28,28))
     width = float(im.size[0])
     height = float(im.size[1])
     new_image = Image.new('L', (28, 28), 255)  # creates white canvas of 28x28 pixels
@@ -48,7 +48,7 @@ def imageprepare(image_data):
         wleft = int(round(((28 - nwidth) / 2), 0))  # caculate vertical pozition
         new_image.paste(img, (wleft, 4))  # paste resized image on white canvas
 
-    new_image = ImageOps.invert(new_image)
+    # new_image = ImageOps.invert(new_image)
 
     tv = list(new_image.getdata())  # get pixel values
 

@@ -1,4 +1,5 @@
 from flask import Flask, request, Response
+from flask_cors import CORS, cross_origin
 import numpy as np
 from urllib.request import urlopen
 # import cv2
@@ -7,7 +8,8 @@ from .image_utils import imageprepare
 from tensorflow import keras
 
 app = Flask(__name__)
-
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/")
 def index():
@@ -20,19 +22,17 @@ def abc():
 
 
 @app.route('/api/image', methods=['POST'])
+@cross_origin()
 def image():
     content = request.json
     data = content["data"]
     with urlopen(data) as response:
         dt = response.read()
 
-        # convert string of image data to uint8
-        # nparr = np.fromstring(dt, np.uint8)
-
-        digit = 0
         tva, new_image = imageprepare(dt)
+
         xnp = np.array(tva, dtype="float32").reshape((1,28, 28,1))
-        model = keras.models.load_model('mnist_fitted_model')
+        model = keras.models.load_model('fit/mnist_fitted_model')
         digits = model.predict(xnp)
 
         # nparr = np.frombuffer(dt, np.uint8)
