@@ -1,5 +1,6 @@
 from PIL import Image, ImageFilter, ImageOps
 import io
+import functools
 
 def remove_transparency(im, bg_colour=(255, 255, 255)):
 
@@ -55,3 +56,28 @@ def imageprepare(image_data):
     # normalize pixels to 0 and 1. 0 is pure white, 1 is pure black.
     tva = [(255 - x) * 1.0 / 255.0 for x in tv]
     return tva, new_image
+
+
+# input data must be a one-dim array of size 28*28, the pixels must be normalized from 0 to 1
+# 0 is pure white, 1 is black
+def ascii_rep(imgdata):
+    row_num = 28
+    col_num = 28
+    line = " ---------------------------- "
+    sb = line
+    _ln = row_num * col_num
+    if len(imgdata) != _ln:
+        raise Exception("input is not an array of length " + str(_ln) + ": " + str(imgdata))
+    for row in range(0, row_num):
+        sb += "\n|"
+
+        def to_char(x):
+            return " .:-=+*#%@"[(min(int(x * 10), 9))]
+
+        def fold(acc, x):
+            return acc + to_char(x)
+        img_str = functools.reduce(fold, imgdata[(row * col_num): ((row + 1) * col_num)], "")
+        sb += img_str
+        sb += "|"
+    sb += "\n" + line
+    return sb
